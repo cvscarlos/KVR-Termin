@@ -5,8 +5,6 @@ const player = require('play-sound')((opts = {}));
 const moment = require('moment');
 
 const {
-  PHPSESSID,
-  TERMIN_ID,
   SALUTATION,
   NAME,
   BIRTHDAY,
@@ -16,17 +14,41 @@ const {
 
 const check_dates_curl = () => `PASTE_YOUR_CURL_HERE`;
 
-const pick_date_curl = ({ date, time }) =>
-  `curl 'https://www22.muenchen.de/view-fs/termin/index.php?' -H 'Connection: keep-alive' -H 'Cache-Control: max-age=0' -H 'Origin: https://www22.muenchen.de' -H 'Upgrade-Insecure-Requests: 1' -H 'Content-Type: application/x-www-form-urlencoded' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36' -H 'Sec-Fetch-User: ?1' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' -H 'Sec-Fetch-Site: same-origin' -H 'Sec-Fetch-Mode: navigate' -H 'Referer: https://www22.muenchen.de/view-fs/termin/index.php?' -H 'Accept-Encoding: gzip, deflate, br' -H 'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8' -H 'Cookie: PHPSESSID=${PHPSESSID}' --data 'step=WEB_APPOINT_NEW_APPOINT&APPOINT=${encodeURIComponent(
-    TERMIN_ID,
-  )}___${date}___${encodeURIComponent(time)}' --compressed`;
+const pick_date_curl = ({ date, time }, terminId, phpSessionId) => `curl 'https://terminvereinbarung.muenchen.de/fs/termin/index.php?' \
+  -H 'Connection: keep-alive' \
+  -H 'Cache-Control: max-age=0' \
+  -H 'Origin: https://terminvereinbarung.muenchen.de' \
+  -H 'Upgrade-Insecure-Requests: 1' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36' \
+  -H 'Sec-Fetch-User: ?1' \
+  -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' \
+  -H 'Sec-Fetch-Site: same-origin' \
+  -H 'Sec-Fetch-Mode: navigate' \
+  -H 'Referer: https://terminvereinbarung.muenchen.de/fs/termin/index.php?' \
+  -H 'Accept-Encoding: gzip, deflate, br' \
+  -H 'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8' \
+  -H 'Cookie: PHPSESSID=${phpSessionId}' \
+  --data 'step=WEB_APPOINT_NEW_APPOINT&APPOINT=${encodeURIComponent(terminId)}___${date}___${encodeURIComponent(time)}' \
+  --compressed`;
 
-const finish_termin_curl = () =>
-  `curl 'https://www22.muenchen.de/view-fs/termin/index.php?' -H 'Connection: keep-alive' -H 'Cache-Control: max-age=0' -H 'Origin: https://www22.muenchen.de' -H 'Upgrade-Insecure-Requests: 1' -H 'Content-Type: application/x-www-form-urlencoded' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36' -H 'Sec-Fetch-User: ?1' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' -H 'Sec-Fetch-Site: same-origin' -H 'Sec-Fetch-Mode: navigate' -H 'Referer: https://www22.muenchen.de/view-fs/termin/index.php?' -H 'Accept-Encoding: gzip, deflate, br' -H 'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8' -H 'Cookie: PHPSESSID=${PHPSESSID}' --data 'step=WEB_APPOINT_SAVE_APPOINT&CONTACT%5Bsalutation%5D=${SALUTATION}&CONTACT%5Bname%5D=${encodeURIComponent(
-    NAME,
-  )}&CONTACT%5Bbirthday%5D=${BIRTHDAY}&CONTACT%5Bemail%5D=${encodeURIComponent(
-    EMAIL,
-  )}&CONTACT%5Bprivacy%5D=1' --compressed`;
+const finish_termin_curl = (phpSessionId) => `curl 'https://terminvereinbarung.muenchen.de/fs/termin/index.php?' \
+  -H 'Connection: keep-alive' \
+  -H 'Cache-Control: max-age=0' \
+  -H 'Origin: https://terminvereinbarung.muenchen.de' \
+  -H 'Upgrade-Insecure-Requests: 1' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36' \
+  -H 'Sec-Fetch-User: ?1' \
+  -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' \
+  -H 'Sec-Fetch-Site: same-origin' \
+  -H 'Sec-Fetch-Mode: navigate' \
+  -H 'Referer: https://terminvereinbarung.muenchen.de/fs/termin/index.php?' \
+  -H 'Accept-Encoding: gzip, deflate, br' \
+  -H 'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8' \
+  -H 'Cookie: PHPSESSID=${phpSessionId}' \
+  --data 'step=WEB_APPOINT_SAVE_APPOINT&CONTACT%5Bsalutation%5D=${SALUTATION}&CONTACT%5Bname%5D=${encodeURIComponent(NAME)}&CONTACT%5Bbirthday%5D=${BIRTHDAY}&CONTACT%5Bemail%5D=${encodeURIComponent(EMAIL)}&CONTACT%5Bprivacy%5D=1' \
+  --compressed`;
 
 const curl = (args) => {
   return new Promise((resolve, reject) => {
@@ -47,13 +69,11 @@ const run = async () => {
   const $ = cheerio.load(page);
   const script = $('script').get(3);
 
-  const jsonAppointments = JSON.parse(
-    $(script)
-      .html()
-      .split(/'/)[1],
+  const jsonAppoints = JSON.parse(
+    Function(`${script.children[0].data}; return jsonAppoints;`).call()
   );
 
-  const appoints = jsonAppointments[TERMIN_ID].appoints;
+  const { appoints } = Object.values(jsonAppoints)[0];
   let found;
   Object.keys(appoints).forEach((key) => {
     if (found) {
@@ -80,8 +100,10 @@ const run = async () => {
     return;
   }
 
-  await curl(pick_date_curl(found));
-  await curl(finish_termin_curl());
+  const phpSessionId = check_dates_curl().match(/PHPSESSID=([^']+)/)[1];
+  const terminId = Object.keys(jsonAppoints)[0];
+  await curl(pick_date_curl(found, terminId, phpSessionId));
+  await curl(finish_termin_curl(phpSessionId));
 
   console.log('got an appointment!', found.date, found.time);
   process.exit();
@@ -95,4 +117,4 @@ setInterval(async () => {
     console.log('some error happened, trying again');
     console.error(err);
   }
-}, 30 * 1000);
+}, 10 * 1000);
